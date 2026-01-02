@@ -291,6 +291,14 @@ body {
   gap: 2.4rem;
 }
 
+/* Chrome, Safari, Edge (new) */
+.box::-webkit-scrollbar {
+  display: none;
+}
+.list::-webkit-scrollbar {
+  display: none;
+}
+
 .btn-add {
   background-color: var(--color-primary);
   color: var(--color-text);
