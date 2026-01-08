@@ -204,7 +204,7 @@ export default function App() {
   const [movies, setMovies] = useState(tempMovieData);
   const [watched, setWatched] = useState(tempWatchedData);
 
-  useEffect(() => {
+  useEffect(function () {
     const movie = fetch(`https://www.omdbapi.com/?apikey=${KEY}&s=matrix`)
       .then((res) => res.json())
       .then((data) => {
