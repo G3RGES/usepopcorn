@@ -199,18 +199,34 @@ function WatchedMovie({ movie }) {
   );
 }
 
+function Loader() {
+  return <p className="loader">Loading...</p>;
+}
+
 const KEY = "cf5f08b";
+const query = "matrix";
 export default function App() {
-  const [movies, setMovies] = useState(tempMovieData);
-  const [watched, setWatched] = useState(tempWatchedData);
+  const [movies, setMovies] = useState([]);
+  const [watched, setWatched] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(function () {
-    const movie = fetch(`https://www.omdbapi.com/?apikey=${KEY}&s=matrix`)
-      .then((res) => res.json())
-      .then((data) => {
-        console.log(data);
+    async function fetchMovies() {
+      setIsLoading(true);
+      const res = await fetch(
+        `https://www.omdbapi.com/?apikey=${KEY}&s=${query}`
+      );
+      const data = await res.json();
+      if (data.Response === "True") {
+        console.log(data.Search);
         setMovies(data.Search);
-      });
+        setIsLoading(false);
+      } else {
+        setMovies([]);
+        setIsLoading(false);
+      }
+    }
+    fetchMovies();
   }, []);
 
   return (
@@ -230,9 +246,7 @@ export default function App() {
             </>
           }
         /> */}
-        <Box>
-          <MovieList movies={movies} />
-        </Box>
+        <Box>{isLoading ? <Loader /> : <MovieList movies={movies} />}</Box>
         <Box>
           <>
             <WatchedSummary watched={watched} />
