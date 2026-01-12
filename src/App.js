@@ -212,9 +212,9 @@ function ErrorMessage({ message }) {
 }
 
 const KEY = "cf5f08b";
-const tempQuery = "matrix";
+// const tempQuery = "matrix";
 export default function App() {
-  const [query, setQuery] = useState(tempQuery);
+  const [query, setQuery] = useState("");
   const [movies, setMovies] = useState([]);
   const [watched, setWatched] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -259,6 +259,7 @@ export default function App() {
           // }
           if (data.Response === "False") throw new Error("Movie not found");
           setMovies(data.Search);
+          // console.log(data);
         } catch (err) {
           console.error(err.message);
           setIsLoading(false);
@@ -268,6 +269,13 @@ export default function App() {
           setError("");
         }
       }
+
+      if (!query.length) {
+        setMovies([]);
+        setError("");
+        return;
+      }
+
       fetchMovies();
     },
     [query]
