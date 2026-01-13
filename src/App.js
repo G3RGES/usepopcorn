@@ -87,20 +87,20 @@ function Main({ children }) {
   return <main className="main">{children}</main>;
 }
 
-function MovieList({ movies }) {
+function MovieList({ movies, onSelectMovie }) {
   // const [movies, setMovies] = useState(tempMovieData);
   return (
-    <ul className="list">
+    <ul className="list list-movies">
       {movies?.map((movie) => (
-        <Movie movie={movie} key={movie.imdbID} />
+        <Movie movie={movie} key={movie.imdbID} onSelectMovie={onSelectMovie} />
       ))}
     </ul>
   );
 }
 
-function Movie({ movie }) {
+function Movie({ movie, onSelectMovie }) {
   return (
-    <li>
+    <li onClick={() => onSelectMovie(movie.imdbID)}>
       <img src={movie.Poster} alt={`${movie.Title} poster`} />
       <h3>{movie.Title}</h3>
       <div>
@@ -211,14 +211,26 @@ function ErrorMessage({ message }) {
   );
 }
 
+const MovieDetails = ({ selectedId, onCloseMovie }) => {
+  return (
+    <div className="details">
+      <button className="btn-back" onClick={onCloseMovie}>
+        &larr;
+      </button>
+      <h2>Movie Details for {selectedId}</h2>
+    </div>
+  );
+};
+
 const KEY = "cf5f08b";
-// const tempQuery = "matrix";
+
 export default function App() {
   const [query, setQuery] = useState("");
   const [movies, setMovies] = useState([]);
   const [watched, setWatched] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+  const [selectedId, setSelectedId] = useState(null);
 
   /* //* Example useEffects 
   useEffect(function () {
@@ -235,6 +247,14 @@ export default function App() {
 
   console.log("During Render");
   */
+
+  function handleSelectMovie(id) {
+    setSelectedId((selectedId) => (id === selectedId ? null : id));
+  }
+
+  function handleCloseMovie() {
+    setSelectedId(null);
+  }
 
   useEffect(
     function () {
@@ -259,7 +279,7 @@ export default function App() {
           // }
           if (data.Response === "False") throw new Error("Movie not found");
           setMovies(data.Search);
-          // console.log(data);
+          // console.log(data.Search);
         } catch (err) {
           console.error(err.message);
           setIsLoading(false);
@@ -301,15 +321,24 @@ export default function App() {
         <Box>
           {/* {isLoading ? <Loader /> : <MovieList movies={movies} />} */}
           {isLoading && !error && <Loader />}
-          {!isLoading && !error && <MovieList movies={movies} />}
+          {!isLoading && !error && (
+            <MovieList movies={movies} onSelectMovie={handleSelectMovie} />
+          )}
           {error && <ErrorMessage message={error} />}
         </Box>
         {/* <Box>{error && <ErrorMessage message={error} />}</Box> */}
         <Box>
-          <>
-            <WatchedSummary watched={watched} />
-            <WatchedMoviesList watched={watched} />
-          </>
+          {selectedId ? (
+            <MovieDetails
+              selectedId={selectedId}
+              onCloseMovie={handleCloseMovie}
+            />
+          ) : (
+            <>
+              <WatchedSummary watched={watched} />
+              <WatchedMoviesList watched={watched} />
+            </>
+          )}
         </Box>
       </Main>
     </>
