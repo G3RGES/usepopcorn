@@ -279,6 +279,27 @@ const MovieDetails = ({ selectedId, onCloseMovie, onAddWatched, watched }) => {
     [selectedId]
   );
 
+  useEffect(
+    function () {
+      if (!title) return;
+      document.title = `Movie | ${title}`;
+
+      let favicon = document.querySelector("link[rel~='icon']");
+
+      if (poster) {
+        favicon.href = poster;
+      } else {
+        favicon.href = "icon.png";
+      }
+
+      return function () {
+        document.title = "usePopcorn";
+        favicon.href = "icon.png";
+      };
+    },
+    [title, poster]
+  );
+
   return (
     <div className="details">
       {isLoading ? (
