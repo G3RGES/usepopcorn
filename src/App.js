@@ -179,8 +179,8 @@ function WatchedMoviesList({ watched }) {
 function WatchedMovie({ movie }) {
   return (
     <li>
-      <img src={movie.Poster} alt={`${movie.Title} poster`} />
-      <h3>{movie.Title}</h3>
+      <img src={movie.poster} alt={`${movie.title} poster`} />
+      <h3>{movie.title}</h3>
       <div>
         <p>
           <span>⭐️</span>
@@ -212,9 +212,10 @@ function ErrorMessage({ message }) {
   );
 }
 
-const MovieDetails = ({ selectedId, onCloseMovie }) => {
+const MovieDetails = ({ selectedId, onCloseMovie, onAddWatched, watched }) => {
   const [movie, setMovie] = useState({});
   const [isLoading, setIsLoading] = useState(false);
+  const [userRating, setUserRating] = useState("");
 
   const {
     Title: title,
@@ -228,6 +229,20 @@ const MovieDetails = ({ selectedId, onCloseMovie }) => {
     Director: director,
     Genre: genre,
   } = movie;
+
+  function handleAdd() {
+    const newWatchedMovie = {
+      imdbID: selectedId,
+      title,
+      poster,
+      runtime: Number(runtime.split(" ").at(0)),
+      imdbRating: Number(imdbRating),
+      userRating,
+      userReview: "",
+    };
+    onAddWatched(newWatchedMovie);
+    onCloseMovie();
+  }
 
   useEffect(
     function () {
@@ -273,7 +288,17 @@ const MovieDetails = ({ selectedId, onCloseMovie }) => {
 
           <section>
             <div className="rating">
-              <StarRating maxRating={10} size={24} defaultRating={imdbRating} />
+              <StarRating
+                maxRating={10}
+                size={24}
+                defaultRating={imdbRating}
+                onSetRating={setUserRating}
+              />
+              {userRating > 0 && (
+                <button className="btn-add" onClick={() => handleAdd()}>
+                  + Add to Watched
+                </button>
+              )}
             </div>
             <p>
               <em>{plot}</em>
@@ -320,6 +345,10 @@ export default function App() {
 
   function handleCloseMovie() {
     setSelectedId(null);
+  }
+
+  function handleAddWatched(movie) {
+    setWatched((watched) => [...watched, movie]);
   }
 
   useEffect(
@@ -398,6 +427,8 @@ export default function App() {
             <MovieDetails
               selectedId={selectedId}
               onCloseMovie={handleCloseMovie}
+              onAddWatched={handleAddWatched}
+              watched={watched}
             />
           ) : (
             <>
