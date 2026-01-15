@@ -378,7 +378,7 @@ const MovieDetails = ({ selectedId, onCloseMovie, onAddWatched, watched }) => {
 const KEY = "cf5f08b";
 
 export default function App() {
-  const [query, setQuery] = useState("matrix");
+  const [query, setQuery] = useState("");
   const [movies, setMovies] = useState([]);
   const [watched, setWatched] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
