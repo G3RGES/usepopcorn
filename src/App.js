@@ -263,11 +263,16 @@ const MovieDetails = ({ selectedId, onCloseMovie, onAddWatched, watched }) => {
 
   useEffect(
     function () {
-      document.addEventListener("keydown", function (e) {
+      function onKeyDown(e) {
         if (e.code === "Escape") {
           onCloseMovie();
         }
-      });
+      }
+      document.addEventListener("keydown", onKeyDown);
+
+      return function () {
+        document.removeEventListener("keydown", onKeyDown);
+      };
     },
     [onCloseMovie]
   );
