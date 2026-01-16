@@ -67,17 +67,6 @@ function Movie({ movie, onSelectMovie }) {
   );
 }
 
-// function Box({ element }) {
-//   const [isOpen, setIsOpen] = useState(true);
-//   return (
-//     <div className="box">
-//       <button className="btn-toggle" onClick={() => setIsOpen((open) => !open)}>
-//         {isOpen ? "–" : "+"}
-//       </button>
-//       {isOpen && element}
-//     </div>
-//   );
-// }
 function Box({ children }) {
   const [isOpen, setIsOpen] = useState(true);
   return (
@@ -343,22 +332,6 @@ export default function App() {
     return JSON.parse(storedWatched);
   });
 
-  /* //* Example useEffects 
-  useEffect(function () {
-    console.log("After initial render");
-  }, []);
-
-  useEffect(function () {
-    console.log("After every render");
-  });
-
-  useEffect(function () {
-    console.log("After query change");   
-  }, [query]);
-
-  console.log("During Render");
-  */
-
   function handleSelectMovie(id) {
     setSelectedId((selectedId) => (id === selectedId ? null : id));
   }
@@ -369,8 +342,6 @@ export default function App() {
 
   function handleAddWatched(movie) {
     setWatched((watched) => [...watched, movie]);
-
-    // localStorage.setItem("watched", JSON.stringify([...watched, movie]));
   }
 
   function handleDeleteWatched(id) {
@@ -399,15 +370,7 @@ export default function App() {
           if (!res.ok)
             throw new Error("Something went wrong with fetching movies");
           const data = await res.json();
-          // if (data.Response === "True") {
-          //   console.log(data.Search);
-          //   setMovies(data.Search);
-          //   // setIsLoading(false);
-          // } else {
-          //   setMovies([]);
-          //   setIsLoading(false);
-          //   throw new Error("Movie not found");
-          // }
+
           if (data.Response === "False") throw new Error("Movie not found");
           setMovies(data.Search);
           setError("");
@@ -418,10 +381,8 @@ export default function App() {
           if (err.name !== "AbortError") {
             setError(err.message);
           }
-          // setIsLoading(false);
         } finally {
           setIsLoading(false);
-          // setError("");
         }
       }
 
@@ -449,24 +410,14 @@ export default function App() {
         <NumResults movies={movies} />
       </Navbar>
       <Main>
-        {/* <Box element={<MovieList movies={movies} />} />
-        <Box
-          element={
-            <>
-              <WatchedSummary watched={watched} />
-              <WatchedMoviesList watched={watched} />
-            </>
-          }
-        /> */}
         <Box>
-          {/* {isLoading ? <Loader /> : <MovieList movies={movies} />} */}
           {isLoading && !error && <Loader />}
           {!isLoading && !error && (
             <MovieList movies={movies} onSelectMovie={handleSelectMovie} />
           )}
           {error && <ErrorMessage message={error} />}
         </Box>
-        {/* <Box>{error && <ErrorMessage message={error} />}</Box> */}
+
         <Box>
           {selectedId ? (
             <MovieDetails
